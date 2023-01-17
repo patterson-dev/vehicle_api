@@ -1,0 +1,281 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API de test para prueba técnica",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "x-faker": "internet.userName"
+          },
+          "password": {
+            "type": "string",
+            "x-faker": "internet.password"
+          }
+        }
+      },
+      "LoginToken": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "x-faker": "datatype.uuid"
+          },
+          "time": {
+            "type": "string",
+            "x-faker": "datatype.datetime",
+            "format": "datetime"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "x-faker": "name.findName"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "x-faker": "internet.email"
+          },
+          "avatar": {
+            "type": "string",
+            "x-faker": "internet.avatar",
+            "format": "url"
+          }
+        }
+      },
+      "Vehicle": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "x-faker": "vehicle.manufacturer"
+          },
+          "model": {
+            "type": "string",
+            "x-faker": "vehicle.model"
+          },
+          "type": {
+            "type": "string",
+            "x-faker": "vehicle.type"
+          },
+          "vin": {
+            "type": "string",
+            "x-faker": "vehicle.vin"
+          },
+          "image": {
+            "type": "string",
+            "format": "url",
+            "x-faker": {
+              "image.transport": [
+                1280,
+                720,
+                true
+              ]
+            }
+          },
+          "fuel": {
+            "type": "string",
+            "x-faker": "vehicle.fuel"
+          },
+          "id": {
+            "type": "number",
+            "x-faker": {
+              "random.numeric": 5
+            }
+          }
+        }
+      },
+      "UnauthorisedMessage": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          }
+        },
+        "example": {
+          "message": "Unauthorised access",
+          "status": -1
+        }
+      }
+    },
+    "responses": {
+      "LoggedIn": {
+        "description": "Logged in",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/LoginToken"
+            }
+          }
+        }
+      },
+      "UnauthorisedError": {
+        "description": "Unauthorised",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UnauthorisedMessage"
+            }
+          }
+        }
+      },
+      "User": {
+        "description": "User profile",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "Vehicle": {
+        "description": "Vehicle detail",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Vehicle"
+            }
+          }
+        }
+      },
+      "VehicleList": {
+        "description": "List of vehicles",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "x-faker": "vehicle.vehicle"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "url",
+                    "x-faker": {
+                      "image.transport": [
+                        640,
+                        640,
+                        true
+                      ]
+                    }
+                  },
+                  "id": {
+                    "type": "number",
+                    "x-faker": {
+                      "random.numeric": 5
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/login": {
+      "post": {
+        "security": [
+          {}
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/LoggedIn"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "description": "Perfil de usuario",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/User"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorisedError"
+          }
+        }
+      }
+    },
+    "/vehicle": {
+      "get": {
+        "description": "Listado de vehículos",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/VehicleList"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorisedError"
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/vehicle/{id}": {
+      "get": {
+        "description": "Detalle de vehículo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Vehicle"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorisedError"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

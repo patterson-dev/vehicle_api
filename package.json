@@ -1,0 +1,23 @@
+{
+  "name": "@patterson_agency/vehicle_api",
+  "version": "1.0.0",
+  "description": "Basic vehicle API",
+  "main": "index.js",
+  "scripts": {
+    "start": "prism mock -d --cors ./api/api.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patterson-dev/vehicle_api.git"
+  },
+  "author": "Patterson Agency",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/patterson-dev/vehicle_api/issues"
+  },
+  "homepage": "https://github.com/patterson-dev/vehicle_api#readme",
+  "devDependencies": {
+    "@stoplight/prism-cli": "^4.10.5"
+  }
+}
