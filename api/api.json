@@ -1,9 +1,25 @@
 {
   "openapi": "3.0.3",
+  "servers": [
+  {
+    "url": "http://localhost:4010",
+    "description": "Local default instance"
+  }],
   "info": {
-    "title": "API de test para prueba técnica",
-    "version": "1.0.0"
+    "title": "Vehicles",
+    "description": "Simple authenticated API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Patterson Agency",
+      "email": "desarrollo@patterson.agency",
+      "url": "https://patterson.agency"
+    }
   },
+  "tags": [
+    { "name": "login", "description": "Login token retrieval"},
+    { "name": "user", "description": "User management"},
+    { "name": "vehicle", "description": "Vehicle information"}
+  ],
   "components": {
     "schemas": {
       "LoginRequest": {
@@ -14,13 +30,16 @@
         ],
         "properties": {
           "username": {
-            "type": "string",
-            "x-faker": "internet.userName"
+            "type": "string"
           },
           "password": {
             "type": "string",
-            "x-faker": "internet.password"
+            "format": "password"
           }
+        },
+        "example": {
+          "username": "user",
+          "password": "pa$$word"
         }
       },
       "LoginToken": {
@@ -28,12 +47,13 @@
         "properties": {
           "token": {
             "type": "string",
+            "format": "uuid",
             "x-faker": "datatype.uuid"
           },
           "time": {
             "type": "string",
             "x-faker": "datatype.datetime",
-            "format": "datetime"
+            "format": "date-time"
           }
         }
       },
@@ -52,7 +72,7 @@
           "avatar": {
             "type": "string",
             "x-faker": "internet.avatar",
-            "format": "url"
+            "format": "uri"
           }
         }
       },
@@ -77,7 +97,7 @@
           },
           "image": {
             "type": "string",
-            "format": "url",
+            "format": "uri",
             "x-faker": {
               "image.transport": [
                 1280,
@@ -170,7 +190,7 @@
                   },
                   "image": {
                     "type": "string",
-                    "format": "url",
+                    "format": "uri",
                     "x-faker": {
                       "image.transport": [
                         640,
@@ -196,7 +216,7 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "uuid"
       }
     }
   },
@@ -206,6 +226,9 @@
         "security": [
           {}
         ],
+        "operationId": "login",
+        "description": "Returns authenticated user token",
+        "tags": [ "login" ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -224,7 +247,9 @@
     },
     "/user": {
       "get": {
-        "description": "Perfil de usuario",
+        "description": "Logged in user profile",
+        "operationId": "getAuthenticatedUser",
+        "tags": [ "user" ],
         "responses": {
           "200": {
             "$ref": "#/components/responses/User"
@@ -237,7 +262,9 @@
     },
     "/vehicle": {
       "get": {
-        "description": "Listado de vehículos",
+        "description": "List of vehicles",
+        "operationId": "getVehicleList",
+        "tags": [ "vehicle" ],
         "responses": {
           "200": {
             "$ref": "#/components/responses/VehicleList"
@@ -251,7 +278,9 @@
     },
     "/vehicle/{id}": {
       "get": {
-        "description": "Detalle de vehículo",
+        "description": "Vehicle detail",
+        "operationId": "getVehicle",
+        "tags": [ "vehicle" ],
         "parameters": [
           {
             "in": "path",
